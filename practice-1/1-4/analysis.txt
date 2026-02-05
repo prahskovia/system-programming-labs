@@ -1,0 +1,56 @@
+Процессы systemd:
+root          42  0.0  0.1  50428 14976 ?        S<s  15:29   0:00 /usr/lib/systemd/systemd-journald
+root          89  0.0  0.0  25276  6272 ?        Ss   15:29   0:00 /usr/lib/systemd/systemd-udevd
+systemd+     107  0.0  0.1  21460 12160 ?        Ss   15:29   0:00 /usr/lib/systemd/systemd-resolved
+systemd+     114  0.0  0.0  91028  7424 ?        Ssl  15:29   0:00 /usr/lib/systemd/systemd-timesyncd
+message+     169  0.0  0.0   9632  4608 ?        Ss   15:29   0:00 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         179  0.0  0.1  17968  8320 ?        Ss   15:29   0:00 /usr/lib/systemd/systemd-logind
+dafna        349  0.0  0.1  20108 10880 ?        Ss   15:29   0:00 /usr/lib/systemd/systemd --user
+dafna       1154  0.0  0.0   2800  1664 pts/0    S+   16:09   0:00 sh -c -- ps aux | grep systemd
+dafna       1156  0.0  0.0   4088  1920 pts/0    S+   16:09   0:00 grep systemd
+
+Анализируем процесс с PID: 1
+
+Дерево процессов для PID 1:
+systemd(1)-+-agetty(192)
+           |-agetty(201)
+           |-cron(168)
+           |-dbus-daemon(169)
+           |-init-systemd(Ub(2)-+-SessionLeader(303)---Relay(305)(304)---bash(305)---task(1153)---sh(1160)---pstree(1161)
+           |                    |-init(6)---{init}(7)
+           |                    |-login(306)---bash(374)
+           |                    `-{init-systemd(Ub}(8)
+           |-rsyslogd(202)-+-{rsyslogd}(215)
+           |               |-{rsyslogd}(216)
+           |               `-{rsyslogd}(217)
+           |-systemd(349)---(sd-pam)(350)
+           |-systemd-journal(42)
+           |-systemd-logind(179)
+           |-systemd-resolve(107)
+           |-systemd-timesyn(114)---{systemd-timesyn}(164)
+           |-systemd-udevd(89)-+-(udev-worker)(1157)
+           |                   |-(udev-worker)(1158)
+           |                   `-(udev-worker)(1159)
+           |-unattended-upgr(209)---{unattended-upgr}(259)
+           `-wsl-pro-service(953)-+-{wsl-pro-service}(954)
+                                  |-{wsl-pro-service}(955)
+                                  |-{wsl-pro-service}(956)
+                                  |-{wsl-pro-service}(957)
+                                  |-{wsl-pro-service}(958)
+                                  |-{wsl-pro-service}(959)
+                                  `-{wsl-pro-service}(960)
+
+Содержимое /proc/1/cmdline:
+/sbin/init
+
+Статус процесса :
+Name:	systemd
+Umask:	0000
+State:	S (sleeping)
+Tgid:	1
+Ngid:	0
+Pid:	1
+PPid:	0
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
